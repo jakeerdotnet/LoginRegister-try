@@ -16,9 +16,12 @@ export class RegisterComponent {
     this.myForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
+      age: ['', [Validators.required, Validators.pattern(/^\d{3}$/)]],
       phoneNo: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(4)]],
       confirmPassword: ['', [Validators.required]],
+      tShirt: ['L', [Validators.pattern(/^\*/), Validators.minLength(3)]],
+      walkFormat: ['2KM', [Validators.required, Validators.minLength(3)]],
       role: ['', Validators.required],
       terms: [false, Validators.requiredTrue]
     }, {
@@ -33,9 +36,9 @@ export class RegisterComponent {
   }
 
   onSubmit() {
-    if (this.myForm.valid) {
-      const { name, email, phoneNo, password, role, token = "not" } = this.myForm.value;
-      const formData = { name, email, phoneNo, password, role, token };
+    if (this.myForm.errors == null) {
+      const { name, email, age, phoneNo, password, tShirt, workFormat, role, token = "not" } = this.myForm.value;
+      const formData = { name, email, age, phoneNo, password, tShirt, workFormat, role, token };
 
       this.auth.signup(formData)
         .subscribe({
