@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
@@ -11,8 +11,7 @@ import { SendOtpModel } from '../models/send-otp.model';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
-
-  
+  sendOtpModel: SendOtpModel = new SendOtpModel();
   myForm: FormGroup;
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
@@ -25,6 +24,7 @@ export class RegisterComponent {
       confirmPassword: ['', [Validators.required]],
       tShirt: ['L', [Validators.pattern(/^\*/), Validators.pattern(/^\*/)]],
       walkFormat: ['2KM', [Validators.required, Validators.minLength(3)]],
+      optNumber: ['',[this.passwordComplexityOKValidator(), this.passwordComplexityValidator()]],
       role: ['', Validators.required],
       terms: [false, Validators.requiredTrue]
     }, {
@@ -34,11 +34,15 @@ export class RegisterComponent {
 
 
   sendMessage1() {
-    var sendOtpModel = new SendOtpModel();
-    sendOtpModel.route = "otp";
-    sendOtpModel.variables_values = "000000";
-    sendOtpModel.numbers = "8884992643";
-    this.auth.sendOtp(sendOtpModel).subscribe({ next: (res) => { console.log(res) } });
+    this.sendOtpModel.route = "otp";
+    this.sendOtpModel.variables_values = "000000";
+    this.sendOtpModel.numbers = this.myForm.value.phoneNo;
+    this.auth.sendOtp(this.sendOtpModel).subscribe({ next: (res) => 
+      { 
+        this.sendOtpModel.variables_values = res.variables_values
+        console.log(res) 
+
+      } });
   }
 
   passwordMatchValidator(form: FormGroup) {
@@ -46,6 +50,33 @@ export class RegisterComponent {
     const confirmPassword = form.get('confirmPassword')?.value;
     return password === confirmPassword ? null : { mismatch: true };
   }
+
+  checkOtp() {
+    this.myForm.value.optNumber == this.sendOtpModel.variables_values ? console.log("OTP Matched") : console.log("OTP Not Matched");
+  }
+
+  passwordComplexityValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (control == undefined) return null;  
+      const password = control.value;
+        const isValid = /^\d{6}$/.test(password);
+        if (!isValid) return null;
+        if(this.myForm == undefined) return null;
+        const passwordValid = password == this.sendOtpModel.variables_values
+        return !passwordValid ? { passwordComplexity: true } : null;
+    };
+  }
+    passwordComplexityOKValidator():ValidatorFn {
+      return (control: AbstractControl): ValidationErrors | null => {
+        if (control == undefined) return null;    
+        const password = control.value;
+          const isValid = /^\d{6}$/.test(password);
+          if (!isValid) return null;
+          if(this.myForm == undefined) return null;
+          const passwordValid = password == this.sendOtpModel.variables_values
+          return !passwordValid ? null : { passwordMatched: true };
+      };
+    }
 
   onSubmit() {
     if (this.myForm.errors == null) {
