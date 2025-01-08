@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt'
 import { TokenApiModel } from '../models/token-api.model';
+import { SendOtpModel } from '../models/send-otp.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,8 @@ import { TokenApiModel } from '../models/token-api.model';
 export class AuthService {
   private isLoggedInCache: boolean | null = null;
 
-  private baseUrl:string = "https://localhost:7207/api/Users/"
+  private baseUrl:string = "https://localhost:7207/api/Users/";
+  private otpBaseUrl:string = "https://www.fast2sms.com/dev/bulkV2"
   private userPayload:any;
   constructor(private http : HttpClient, private router: Router) { 
     this.userPayload = this.decodeToken();
@@ -65,5 +67,17 @@ export class AuthService {
   }
   renewToken(tokenApi : TokenApiModel){
     return this.http.post<any>(`${this.baseUrl}refresh`,tokenApi)
+  }
+
+  sendOtp(otpModel : SendOtpModel){
+    return this.http.post<any>(this.otpBaseUrl, otpModel, {headers: this.getHeaders()})
+  }
+
+  getHeaders(){
+    let headers = new HttpHeaders({
+      'authorization': 'QYrg3nNEohqxDA41ICbmuPUtXFz0JB8OVk2fdlZ7vWKiMcyaR6Dq9OHNAcTLkQ6SCguFt8mBzXRa1y2E',
+      'Content-Type': 'application/json'
+    })
+    return headers;
   }
 }

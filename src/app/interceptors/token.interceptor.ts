@@ -11,13 +11,18 @@ export class tokenInterceptor implements HttpInterceptor {
   constructor(private auth: AuthService, private router: Router) { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const myToken = this.auth.getToken();
+    //const myToken = this.auth.getToken();
 
-    if (myToken) {
-      request = request.clone({
-        setHeaders: { Authorization: `Bearer ${myToken}` }
-      })
-    }
+    request = request.clone({
+      setHeaders: { 'authorization' : 'QYrg3nNEohqxDA41ICbmuPUtXFz0JB8OVk2fdlZ7vWKiMcyaR6Dq9OHNAcTLkQ6SCguFt8mBzXRa1y2E', 'Content-Type': 'application/json' }
+    })
+
+    // if (myToken) {
+    //   request = request.clone({
+    //     setHeaders: { Authorization: 'QYrg3nNEohqxDA41ICbmuPUtXFz0JB8OVk2fdlZ7vWKiMcyaR6Dq9OHNAcTLkQ6SCguFt8mBzXRa1y2E'}
+    //   })
+    // }
+
     return next.handle(request).pipe(
       catchError((err: any) => {
         if (err instanceof HttpErrorResponse) {

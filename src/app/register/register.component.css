@@ -109,3 +109,8 @@
     white-space: nowrap;
     width: 1px;
   }
+  .form-control{
+    -webkit-border-radius: 0;
+       -moz-border-radius: 0;
+            border-radius: 0;
+  }
