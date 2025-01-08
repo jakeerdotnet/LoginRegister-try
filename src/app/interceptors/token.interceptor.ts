@@ -13,9 +13,9 @@ export class tokenInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     //const myToken = this.auth.getToken();
 
-    request = request.clone({
-      setHeaders: { 'authorization' : 'QYrg3nNEohqxDA41ICbmuPUtXFz0JB8OVk2fdlZ7vWKiMcyaR6Dq9OHNAcTLkQ6SCguFt8mBzXRa1y2E', 'Content-Type': 'application/json' }
-    })
+    // request = request.clone({
+    //   setHeaders: { 'authorization' : 'QYrg3nNEohqxDA41ICbmuPUtXFz0JB8OVk2fdlZ7vWKiMcyaR6Dq9OHNAcTLkQ6SCguFt8mBzXRa1y2E', 'Content-Type': 'application/json' }
+    // })
 
     // if (myToken) {
     //   request = request.clone({
@@ -34,6 +34,7 @@ export class tokenInterceptor implements HttpInterceptor {
       })
     );
   }
+  
   handleUnAuthorizedError(req: HttpRequest<any>, next: HttpHandler) {
     let tokenApiModel = new TokenApiModel();
     tokenApiModel.accessToken = this.auth.getToken()!;

@@ -12,10 +12,10 @@ export class AuthService {
   private isLoggedInCache: boolean | null = null;
 
   private baseUrl:string = "https://localhost:7207/api/Users/";
-  private otpBaseUrl:string = "https://www.fast2sms.com/dev/bulkV2"
+  private otpBaseUrl:string = "https://otp-server-new.vercel.app/api"
   private userPayload:any;
   constructor(private http : HttpClient, private router: Router) { 
-    this.userPayload = this.decodeToken();
+    //this.userPayload = this.decodeToken();
   }
 
   signup(userObj : any){
@@ -70,14 +70,7 @@ export class AuthService {
   }
 
   sendOtp(otpModel : SendOtpModel){
-    return this.http.post<any>(this.otpBaseUrl, otpModel, {headers: this.getHeaders()})
+    return this.http.post<any>(this.otpBaseUrl, otpModel)
   }
 
-  getHeaders(){
-    let headers = new HttpHeaders({
-      'authorization': 'QYrg3nNEohqxDA41ICbmuPUtXFz0JB8OVk2fdlZ7vWKiMcyaR6Dq9OHNAcTLkQ6SCguFt8mBzXRa1y2E',
-      'Content-Type': 'application/json'
-    })
-    return headers;
-  }
 }

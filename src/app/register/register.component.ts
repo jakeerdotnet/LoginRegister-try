@@ -36,7 +36,7 @@ export class RegisterComponent {
   sendMessage1() {
     var sendOtpModel = new SendOtpModel();
     sendOtpModel.route = "otp";
-    sendOtpModel.variables_values = "5599";
+    sendOtpModel.variables_values = "000000";
     sendOtpModel.numbers = "8884992643";
     this.auth.sendOtp(sendOtpModel).subscribe({ next: (res) => { console.log(res) } });
   }
