@@ -20,7 +20,7 @@ export class RegisterComponent {
       email: ['', [Validators.required, Validators.email]],
       age: ['', [Validators.required, Validators.minLength(3)]],
       phoneNo: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
-      password: ['', [Validators.required, Validators.minLength(4)]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]],
       tShirt: ['L', [Validators.pattern(/^\*/), Validators.pattern(/^\*/)]],
       walkFormat: ['2KM', [Validators.required, Validators.minLength(3)]],

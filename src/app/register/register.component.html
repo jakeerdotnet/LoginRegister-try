@@ -24,7 +24,7 @@
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <input type="email" id="email" formControlName="email" class="form-control" placeholder="Your Email"/>
+                      <input type="email" id="email" formControlName="email" class="form-control" placeholder="Your email"/>
                       <div *ngIf="myForm.get('email')?.invalid && myForm.get('email')?.touched">
                         <small *ngIf="myForm.get('email')?.errors?.['required']">Your Email is required.</small>
                         <small *ngIf="myForm.get('email')?.errors?.['email']">Invalid email format.</small>
@@ -33,7 +33,7 @@
                   </div>
 
                   <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-number fa-lg me-3 fa-fw"></i>
+                    <i class="fas fa-birthday-cake fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
                       <input type="number" id="age" formControlName="age" class="form-control" placeholder="Your age" />
                       <div *ngIf="myForm.get('age')?.invalid && myForm.get('age')?.touched">
@@ -46,10 +46,10 @@
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-phone fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <input type="text" id="phoneNumber" formControlName="phoneNo" class="form-control" placeholder="Phone number" />
-                      <div *ngIf="myForm.get('phoneNumber')?.invalid && myForm.get('phoneNumber')?.touched">
-                        <small *ngIf="myForm.get('phoneNumber')?.errors?.['required']">Phone Number is required.</small>
-                        <small *ngIf="myForm.get('phoneNumber')?.errors?.['pattern']">Phone Number must be 10 digits
+                      <input type="text" id="phoneNo" formControlName="phoneNo" class="form-control" placeholder="Phone number" />
+                      <div *ngIf="myForm.get('phoneNo')?.invalid && myForm.get('phoneNo')?.touched">
+                        <small *ngIf="myForm.get('phoneNo')?.errors?.['required']">Phone Number is required.</small>
+                        <small *ngIf="myForm.get('phoneNo')?.errors?.['pattern']">Phone Number must be 10 digits
                           long.</small>
                       </div>
                     </div>
@@ -77,9 +77,9 @@
                   </div>
 
                   <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                    <i class="fas fa-shirt fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <label class="form-label" for="tShirt">T Shirt</label>
+                      <label class="form-label" for="tShirt">T shirt</label>
                       <select class="form-control" id="tShirt" formControlName="tShirt" name="tShirt" required>
                         <option value="XS">XS</option>
                         <option value="S">S</option>
@@ -97,7 +97,7 @@
                   </div>
                   
                   <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                    <i class="fas fa-person-walking fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
                       <label class="form-label" for="name">Walk format</label>
                       <select class="form-control" id="walkFormat" formControlName="walkFormat" name="walkFormat" required>
@@ -126,7 +126,7 @@
                   </div>
 
                   <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-otp fa-lg me-3 fa-fw"></i>
+                    <i class="fas fa-user-check fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
                       <input type="text" id="optNumber" formControlName="optNumber" class="form-control" placeholder="OTP number" />
                       <div *ngIf="myForm.get('optNumber')?.invalid && myForm.get('optNumber')?.touched">
