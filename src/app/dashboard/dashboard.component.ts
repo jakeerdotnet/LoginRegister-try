@@ -19,15 +19,15 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.loadUsers();
     this.userStore.getFullNameFromStore()
-    .subscribe(val=>{
-      const fullNameFromToken = this.auth.getFullNameFromToken();
-      this.fullName = val || fullNameFromToken
-    });
-    this.userStore.getRoleFromStore()
-    .subscribe(val => {
-      const roleFromToken = this.auth.getRoleFromToken();
-      this.role = val || roleFromToken
-    })
+    // .subscribe(val=>{
+    //   const fullNameFromToken = this.auth.getFullNameFromToken();
+    //   this.fullName = val || fullNameFromToken
+    // });
+    // this.userStore.getRoleFromStore()
+    // .subscribe(val => {
+    //   const roleFromToken = this.auth.getRoleFromToken();
+    //   this.role = val || roleFromToken
+    // })
   }
   loadUsers(): void {
     this.api.getUsers().subscribe(

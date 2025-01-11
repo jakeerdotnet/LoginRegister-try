@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class ApiService {
 
-  private baseUrl:string = "https://localhost:7207/api/Users"
+  private baseUrl:string = "https://mongodb-node-crud-example.vercel.app/"
   constructor(private http : HttpClient, private router: Router) { }
 
   getUsers(): Observable<any> {

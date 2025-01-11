@@ -114,3 +114,7 @@
        -moz-border-radius: 0;
             border-radius: 0;
   }
+  .error-message{
+    color: red;
+  }
+  

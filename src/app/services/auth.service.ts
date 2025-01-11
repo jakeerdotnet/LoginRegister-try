@@ -11,7 +11,7 @@ import { SendOtpModel } from '../models/send-otp.model';
 export class AuthService {
   private isLoggedInCache: boolean | null = null;
 
-  private baseUrl:string = "https://localhost:7207/api/Users/";
+  private baseUrl:string = "https://mongodb-node-crud-example.vercel.app/";
   private otpBaseUrl:string = "https://otp-server-new.vercel.app/api"
   private userPayload:any;
   constructor(private http : HttpClient, private router: Router) { 
@@ -19,12 +19,13 @@ export class AuthService {
   }
 
   signup(userObj : any){
-    return this.http.post<any>(`${this.baseUrl}register`,userObj)
+    return this.http.post<any>(`${this.baseUrl}`,userObj)
   }
 
   login(loginObj: any){
     return this.http.post<any>(`${this.baseUrl}authenticate`,loginObj)
   }
+  
   storeToken(tokenValue: string){
     localStorage.setItem('token', tokenValue)
   }

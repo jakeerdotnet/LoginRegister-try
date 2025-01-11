@@ -13,6 +13,9 @@ import { SendOtpModel } from '../models/send-otp.model';
 export class RegisterComponent {
   sendOtpModel: SendOtpModel = new SendOtpModel();
   myForm: FormGroup;
+  myForm1: FormGroup;
+  disableSubmitButton:boolean = false;
+  disableRegisteredButton:boolean = false;
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
     this.myForm = this.fb.group({
@@ -22,27 +25,37 @@ export class RegisterComponent {
       phoneNo: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]],
-      tShirt: ['L', [Validators.pattern(/^\*/), Validators.pattern(/^\*/)]],
-      walkFormat: ['2KM', [Validators.required, Validators.minLength(3)]],
-      optNumber: ['',[this.passwordComplexityOKValidator(), this.passwordComplexityValidator()]],
-      role: ['', Validators.required],
+      tShirt: ['L', []],
+      walkFormat: ['2KM', []],
       terms: [false, Validators.requiredTrue]
     }, {
       validators: this.passwordMatchValidator
     });
-  }
 
+    this.myForm1 = this.fb.group({
+      optNumber: ['',[this.passwordComplexityOKValidator(), this.passwordComplexityValidator()]],
+      terms: [false, Validators.requiredTrue]
+    }, {
+      validators: this.passwordMatchValidator
+    });
+
+    this.myForm.valueChanges.subscribe((changedObj: any) => {
+      this.disableSubmitButton = this.myForm.valid;
+    });
+
+    this.myForm1.valueChanges.subscribe((changedObj: any) => {
+      this.disableRegisteredButton = this.myForm1.valid;
+    });
+  }
 
   sendMessage1() {
     this.sendOtpModel.route = "otp";
     this.sendOtpModel.variables_values = "000000";
     this.sendOtpModel.numbers = this.myForm.value.phoneNo;
-    this.auth.sendOtp(this.sendOtpModel).subscribe({ next: (res) => 
-      { 
+    this.auth.sendOtp(this.sendOtpModel).subscribe({ next: (res) => { 
         this.sendOtpModel.variables_values = res.variables_values
         console.log(res) 
-
-      } });
+      }});
   }
 
   passwordMatchValidator(form: FormGroup) {
@@ -80,10 +93,10 @@ export class RegisterComponent {
 
   onSubmit() {
     if (this.myForm.errors == null) {
-      const { name, email, age, phoneNo, password, tShirt, workFormat, role, token = "not" } = this.myForm.value;
-      const formData = { name, email, age, phoneNo, password, tShirt, workFormat, role, token };
+      const { name, email, age, phoneNo, password, tShirt, workFormat, token = "not" } = this.myForm.value;
+      const formData = { name, email, age, phoneNo, password, tShirt, workFormat, token };
 
-      /*
+      
       this.auth.signup(formData)
         .subscribe({
           next: (res) => {
@@ -121,8 +134,8 @@ export class RegisterComponent {
             });
           }
         });
-      */
-      this.sendMessage1();
+
+      //this.sendMessage1();
       console.log('Form Submitted!', formData);
     } else {
       Swal.fire({
