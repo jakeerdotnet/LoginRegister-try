@@ -14,13 +14,14 @@ export class RegisterComponent {
   sendOtpModel: SendOtpModel = new SendOtpModel();
   myForm: FormGroup;
   myForm1: FormGroup;
+  isEmailAlreadyExisting:boolean = false;
   disableSubmitButton:boolean = false;
   disableRegisteredButton:boolean = false;
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
     this.myForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.email, this.emailExistingValidator()]],
       age: ['', [Validators.required, Validators.minLength(3)]],
       phoneNo: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -41,6 +42,8 @@ export class RegisterComponent {
 
     this.myForm.valueChanges.subscribe((changedObj: any) => {
       this.disableSubmitButton = this.myForm.valid;
+      this.isEmailAlreadyExisting = false;
+      this.myForm.controls['email'].setErrors(null);
     });
 
     this.myForm1.valueChanges.subscribe((changedObj: any) => {
@@ -48,7 +51,7 @@ export class RegisterComponent {
     });
   }
 
-  sendMessage1() {
+  sendOtpMessage() {
     this.sendOtpModel.route = "otp";
     this.sendOtpModel.variables_values = "000000";
     this.sendOtpModel.numbers = this.myForm.value.phoneNo;
@@ -68,6 +71,14 @@ export class RegisterComponent {
     this.myForm.value.optNumber == this.sendOtpModel.variables_values ? console.log("OTP Matched") : console.log("OTP Not Matched");
   }
 
+  emailExistingValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (control == undefined) return null;  
+      return this.isEmailAlreadyExisting ? { emailExisting: true } : null;
+    };
+  }
+  
+
   passwordComplexityValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control == undefined) return null;  
@@ -79,46 +90,34 @@ export class RegisterComponent {
         return !passwordValid ? { passwordComplexity: true } : null;
     };
   }
-    passwordComplexityOKValidator():ValidatorFn {
-      return (control: AbstractControl): ValidationErrors | null => {
-        if (control == undefined) return null;    
-        const password = control.value;
-          const isValid = /^\d{6}$/.test(password);
-          if (!isValid) return null;
-          if(this.myForm == undefined) return null;
-          const passwordValid = password == this.sendOtpModel.variables_values
-          return !passwordValid ? null : { passwordMatched: true };
-      };
-    }
+  passwordComplexityOKValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (control == undefined) return null;
+      const password = control.value;
+      const isValid = /^\d{6}$/.test(password);
+      if (!isValid) return null;
+      if (this.myForm == undefined) return null;
+      const passwordValid = password == this.sendOtpModel.variables_values
+      return !passwordValid ? null : { passwordMatched: true };
+    };
+  }
 
   onSubmit() {
-    if (this.myForm.errors == null) {
+    if (this.myForm.valid) {
       const { name, email, age, phoneNo, password, tShirt, workFormat, token = "not" } = this.myForm.value;
       const formData = { name, email, age, phoneNo, password, tShirt, workFormat, token };
-
-      
-      this.auth.signup(formData)
-        .subscribe({
-          next: (res) => {
-            Swal.fire({
-              icon: 'success',
-              title: res.message,
-              iconColor: 'white',
-              background: 'green',
-              color: 'white',
-              timer: 2000,
-              timerProgressBar: true,
-              toast: true,
-              position: 'top-end',
-              showConfirmButton: false,
-            }).then(() => {
-              this.router.navigate(['']); 
-            });
-          },
-          error: (err) => {
+      this.auth.getRecord(formData).subscribe({
+        next: (res) => {
+          if (Array.isArray(res)) {
+            this.isEmailAlreadyExisting = res.length > 0;
+          } else {
+            this.isEmailAlreadyExisting = false;
+          }
+          if (this.isEmailAlreadyExisting) {
+            this.myForm.controls['email'].setErrors({ emailExisting: true });
             Swal.fire({
               icon: 'error',
-              title: err.error.message,
+              title: "User Already Exists",
               iconColor: 'white',
               background: 'red',
               color: 'white',
@@ -132,11 +131,50 @@ export class RegisterComponent {
                 toast.addEventListener('mouseleave', Swal.resumeTimer);
               }
             });
-          }
-        });
+          }else{
 
-      //this.sendMessage1();
-      console.log('Form Submitted!', formData);
+            this.sendOtpMessage();
+            console.log('Form Submitted!', formData);
+            this.auth.signup(formData)
+            .subscribe({
+              next: (res) => {
+                Swal.fire({
+                  icon: 'success',
+                  title: res.message,
+                  iconColor: 'white',
+                  background: 'green',
+                  color: 'white',
+                  timer: 2000,
+                  timerProgressBar: true,
+                  toast: true,
+                  position: 'top-end',
+                  showConfirmButton: false,
+                }).then(() => {
+                  this.router.navigate(['']); 
+                });
+              },
+              error: (err) => {
+                Swal.fire({
+                  icon: 'error',
+                  title: err.error.message,
+                  iconColor: 'white',
+                  background: 'red',
+                  color: 'white',
+                  timer: 3000,
+                  timerProgressBar: true,
+                  toast: true,
+                  position: 'top-end',
+                  showConfirmButton: false,
+                  didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                  }
+                });
+              }
+            });
+          }
+        }
+      });
     } else {
       Swal.fire({
         icon: 'error',
@@ -156,9 +194,5 @@ export class RegisterComponent {
       });
       console.log('Form is invalid');
     }
-  }
-
-  selectPropertyType(type: string) {
-    this.myForm.get('role')?.setValue(type);
   }
 }

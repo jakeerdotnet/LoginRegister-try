@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt'
@@ -10,12 +10,16 @@ import { SendOtpModel } from '../models/send-otp.model';
 })
 export class AuthService {
   private isLoggedInCache: boolean | null = null;
-
+  //private baseUrl:string = "http://localhost:3000/";
   private baseUrl:string = "https://mongodb-node-crud-example.vercel.app/";
   private otpBaseUrl:string = "https://otp-server-new.vercel.app/api"
   private userPayload:any;
   constructor(private http : HttpClient, private router: Router) { 
     //this.userPayload = this.decodeToken();
+  }
+
+  getRecord(userObj : any){
+    return this.http.get<any>(`${this.baseUrl}person`, { params: userObj })
   }
 
   signup(userObj : any){
@@ -25,7 +29,7 @@ export class AuthService {
   login(loginObj: any){
     return this.http.post<any>(`${this.baseUrl}authenticate`,loginObj)
   }
-  
+
   storeToken(tokenValue: string){
     localStorage.setItem('token', tokenValue)
   }

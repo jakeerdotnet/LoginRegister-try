@@ -14,8 +14,8 @@
                     <div class="form-outline flex-fill mb-0">
                       <input type="text" id="name" formControlName="name" class="form-control" placeholder="Your name" />
                       <div *ngIf="myForm.get('name')?.invalid && myForm.get('name')?.touched">
-                        <small class="error-message" *ngIf="myForm.get('name')?.errors?.['required']">Your Name is required.</small>
-                        <small class="error-message" *ngIf="myForm.get('name')?.errors?.['minlength']">Your Name must be at least 3 characters
+                        <small class="error-message" *ngIf="myForm.get('name')?.errors?.['required']">Your name is required.</small>
+                        <small class="error-message" *ngIf="myForm.get('name')?.errors?.['minlength']">Your name must be at least 3 characters
                           long.</small>
                       </div>
                     </div>
@@ -26,8 +26,9 @@
                     <div class="form-outline flex-fill mb-0">
                       <input type="email" id="email" formControlName="email" class="form-control" placeholder="Your email"/>
                       <div *ngIf="myForm.get('email')?.invalid && myForm.get('email')?.touched">
-                        <small class="error-message" *ngIf="myForm.get('email')?.errors?.['required']">Your Email is required.</small>
+                        <small class="error-message" *ngIf="myForm.get('email')?.errors?.['required']">Your email is required.</small>
                         <small class="error-message" *ngIf="myForm.get('email')?.errors?.['email']">Invalid email format.</small>
+                        <small class="error-message" *ngIf="myForm.get('email')?.errors?.['emailExisting']">Your Email already registered.</small>
                       </div>
                     </div>
                   </div>
@@ -48,8 +49,8 @@
                     <div class="form-outline flex-fill mb-0">
                       <input type="text" id="phoneNo" formControlName="phoneNo" class="form-control" placeholder="Phone number" />
                       <div *ngIf="myForm.get('phoneNo')?.invalid && myForm.get('phoneNo')?.touched">
-                        <small class="error-message" *ngIf="myForm.get('phoneNo')?.errors?.['required']">Phone Number is required.</small>
-                        <small class="error-message" *ngIf="myForm.get('phoneNo')?.errors?.['pattern']">Phone Number must be 10 digits
+                        <small class="error-message" *ngIf="myForm.get('phoneNo')?.errors?.['required']">Phone number is required.</small>
+                        <small class="error-message" *ngIf="myForm.get('phoneNo')?.errors?.['pattern']">Phone number must be 10 digits
                           long.</small>
                       </div>
                     </div>
@@ -71,7 +72,7 @@
                     <div class="form-outline flex-fill mb-0">
                       <input type="password" id="confirmPassword" formControlName="confirmPassword" class="form-control" placeholder="Repeat your password" />
                       <div *ngIf="myForm.hasError('mismatch') && myForm.get('confirmPassword')?.touched">
-                        <small>Passwords must match.</small>
+                        <small  class="error-message">Passwords must match.</small>
                       </div>
                     </div>
                   </div>
@@ -89,10 +90,6 @@
                         <option value="2XL">2XL</option>
                         <option value="3XL">3XL</option>
                       </select>
-                      <div *ngIf="myForm.get('tShirt')?.invalid && myForm.get('tShirt')?.touched">
-                        <small class="error-message" *ngIf="myForm.get('tShirt')?.errors?.['required']">T Shirt is required.</small>
-                        <small class="error-message" *ngIf="myForm.get('tShirt')?.errors?.['minlength']">T Shirt must be at least 3 characters long.</small>
-                      </div>
                     </div>
                   </div>
                   
@@ -105,11 +102,6 @@
                         <option value="3KM">3KM</option>
                         <option value="5KM">5KM</option>
                       </select>
-                      <div *ngIf="myForm.get('walkFormat')?.invalid && myForm.get('walkFormat')?.touched">
-                        <small class="error-message" *ngIf="myForm.get('walkFormat')?.errors?.['required']">T Shirt is required.</small>
-                        <small class="error-message" *ngIf="myForm.get('walkFormat')?.errors?.['minlength']">T Shirt must be at least 3 characters
-                          long.</small>
-                      </div>
                     </div>
                   </div>
 
