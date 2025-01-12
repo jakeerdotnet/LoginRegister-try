@@ -14,4 +14,8 @@ export class ApiService {
   getUsers(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}`)
   }
+
+  getRecord(userObj : any){
+    return this.http.get<any>(`${this.baseUrl}person`, { params: userObj })
+  }
 }

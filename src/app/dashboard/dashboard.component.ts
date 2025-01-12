@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { ApiService } from '../services/api.service';
 import { UserStoreService } from '../services/user-store.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,8 +14,7 @@ export class DashboardComponent implements OnInit {
   public users:any = [];
   public fullName : string = "";
   public role : string = "";
-
-  constructor(private auth : AuthService, private api : ApiService, private userStore : UserStoreService){}
+  constructor(private auth : AuthService, private api : ApiService, private userStore : UserStoreService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadUsers();
@@ -30,15 +30,24 @@ export class DashboardComponent implements OnInit {
     // })
   }
   loadUsers(): void {
-    this.api.getUsers().subscribe(
-      (response) => {
-        this.users = response;
-        console.log(this.users);
-      },
-      (error) => {
-        console.error('Error fetching users', error);
-      }
-    );
+    let loggedInUser = this.auth.getUser();
+    if(loggedInUser!=null){
+      let loggedInUserJson = JSON.parse(loggedInUser);
+      this.auth.getRecord(loggedInUserJson)
+        .subscribe({
+          next: (res) => {
+            if (Array.isArray(res)) {
+              this.fullName = res[0].name;
+            }
+            else {
+              this.router.navigate(['/login']);
+            }
+          },
+          error: (err) => {
+            this.router.navigate(['/login']);
+          }
+        });
+    }
   }
 
   logout(){

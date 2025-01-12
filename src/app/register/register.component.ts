@@ -34,10 +34,7 @@ export class RegisterComponent {
     });
 
     this.myForm1 = this.fb.group({
-      optNumber: ['',[this.passwordComplexityOKValidator(), this.passwordComplexityValidator()]],
-      terms: [false, Validators.requiredTrue]
-    }, {
-      validators: this.passwordMatchValidator
+      optNumber: ['',[this.otpCheckValidator()]]
     });
 
     this.myForm.valueChanges.subscribe((changedObj: any) => {
@@ -68,7 +65,7 @@ export class RegisterComponent {
   }
 
   checkOtp() {
-    this.myForm.value.optNumber == this.sendOtpModel.variables_values ? console.log("OTP Matched") : console.log("OTP Not Matched");
+    this.myForm1.value.optNumber == this.sendOtpModel.variables_values ? console.log("OTP Matched") : console.log("OTP Not Matched");
   }
 
   emailExistingValidator(): ValidatorFn {
@@ -78,34 +75,22 @@ export class RegisterComponent {
     };
   }
   
-
-  passwordComplexityValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      if (control == undefined) return null;  
-      const password = control.value;
-        const isValid = /^\d{6}$/.test(password);
-        if (!isValid) return null;
-        if(this.myForm == undefined) return null;
-        const passwordValid = password == this.sendOtpModel.variables_values
-        return !passwordValid ? { passwordComplexity: true } : null;
-    };
-  }
-  passwordComplexityOKValidator(): ValidatorFn {
+  otpCheckValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control == undefined) return null;
       const password = control.value;
       const isValid = /^\d{6}$/.test(password);
       if (!isValid) return null;
-      if (this.myForm == undefined) return null;
+      if (this.myForm1 == undefined) return null;
       const passwordValid = password == this.sendOtpModel.variables_values
-      return !passwordValid ? null : { passwordMatched: true };
+      return passwordValid ? null : { otpMismatched: true };
     };
   }
 
   onSubmit() {
     if (this.myForm.valid) {
-      const { name, email, age, phoneNo, password, tShirt, workFormat, token = "not" } = this.myForm.value;
-      const formData = { name, email, age, phoneNo, password, tShirt, workFormat, token };
+      const { name, email, age, phoneNo, password, tShirt, walkFormat, token = "not" } = this.myForm.value;
+      const formData = { name, email, age, phoneNo, password, tShirt, walkFormat, token };
       this.auth.getRecord(formData).subscribe({
         next: (res) => {
           if (Array.isArray(res)) {
@@ -132,12 +117,73 @@ export class RegisterComponent {
               }
             });
           }else{
-
             this.sendOtpMessage();
             console.log('Form Submitted!', formData);
             this.auth.signup(formData)
             .subscribe({
               next: (res) => {
+                Swal.fire({
+                  icon: 'success',
+                  title: res.message,
+                  iconColor: 'white',
+                  background: 'green',
+                  color: 'white',
+                  timer: 2000,
+                  timerProgressBar: true,
+                  toast: true,
+                  position: 'top-end',
+                  showConfirmButton: false,
+                });
+              },
+              error: (err) => {
+                Swal.fire({
+                  icon: 'error',
+                  title: err.error.message,
+                  iconColor: 'white',
+                  background: 'red',
+                  color: 'white',
+                  timer: 3000,
+                  timerProgressBar: true,
+                  toast: true,
+                  position: 'top-end',
+                  showConfirmButton: false,
+                  didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                  }
+                });
+              }
+            });
+          }
+        }
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: "You Missing Something! Kindly Check Form again!",
+        iconColor: 'white',
+        background: 'red',
+        color: 'white',
+        timer: 3000,
+        timerProgressBar: true,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer);
+          toast.addEventListener('mouseleave', Swal.resumeTimer);
+        }
+      });
+      console.log('Form is invalid');
+    }
+  }
+
+  onRegister() {
+    if (this.myForm.valid && this.myForm1.valid) {
+      const { name, email, age, phoneNo, password, tShirt, walkFormat, token = this.myForm1.value.optNumber } = this.myForm.value;
+      const formData = { name, email, age, phoneNo, password, tShirt, walkFormat, token };
+      this.auth.updateRecord(formData).subscribe({
+        next: (res) => {
                 Swal.fire({
                   icon: 'success',
                   title: res.message,
@@ -172,9 +218,6 @@ export class RegisterComponent {
                 });
               }
             });
-          }
-        }
-      });
     } else {
       Swal.fire({
         icon: 'error',

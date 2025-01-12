@@ -25,18 +25,16 @@ export class LoginComponent {
       const loginData = this.loginForm.value;
       console.log('Login Submitted!', loginData);
 
-      if (loginData.email == 'Jakeerdotnet@gmail.com' && loginData.password == '123456') {
-        this.router.navigate(['/dashboard']);
-      } else {
-        this.auth.login(loginData)
-          .subscribe({
-            next: (res) => {
-              this.loginForm.reset();
-              this.auth.storeToken(res.accessToken);
-              this.auth.storeRefreshToken(res.refreshToken);
-              const tokenPayLoad = this.auth.decodeToken();
-              this.userStore.setFullNameFromStore(tokenPayLoad.unique_name);
-              this.userStore.setRoleFromStore(tokenPayLoad.role);
+      this.auth.login(loginData)
+        .subscribe({
+          next: (res) => {
+            let isAuthenticated = false;
+
+            if (Array.isArray(res)) {
+              isAuthenticated = res.length > 0;
+            }
+
+            if (isAuthenticated) {
               Swal.fire({
                 icon: 'success',
                 title: "Login success",
@@ -49,13 +47,13 @@ export class LoginComponent {
                 position: 'top-end',
                 showConfirmButton: false,
               }).then(() => {
+                this.auth.storeUser(res[0]);
                 this.router.navigate(['/dashboard']);
               });
-            },
-            error: (err) => {
+            } else {
               Swal.fire({
                 icon: 'error',
-                title: err.error.message,
+                title: 'Invalid Credentials',
                 iconColor: 'white',
                 background: 'red',
                 color: 'white',
@@ -70,25 +68,44 @@ export class LoginComponent {
                 }
               });
             }
-          });
-        }
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: "You Missing Something! Kindly Check Form again!",
-          iconColor: 'white',
-          background: 'red',
-          color: 'white',
-          timer: 3000,
-          timerProgressBar: true,
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer);
-            toast.addEventListener('mouseleave', Swal.resumeTimer);
+          },
+          error: (err) => {
+            Swal.fire({
+              icon: 'error',
+              title: err.error.message,
+              iconColor: 'white',
+              background: 'red',
+              color: 'white',
+              timer: 3000,
+              timerProgressBar: true,
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+              }
+            });
+            this.loginForm.reset();
           }
         });
-      }
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: "You Missing Something! Kindly Check Form again!",
+        iconColor: 'white',
+        background: 'red',
+        color: 'white',
+        timer: 3000,
+        timerProgressBar: true,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer);
+          toast.addEventListener('mouseleave', Swal.resumeTimer);
+        }
+      });
+    }
   }
 }

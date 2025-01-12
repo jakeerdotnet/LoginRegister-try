@@ -30,6 +30,18 @@ export class AuthService {
     return this.http.post<any>(`${this.baseUrl}authenticate`,loginObj)
   }
 
+  updateRecord(userObj : any){
+    return this.http.put<any>(`${this.baseUrl}`,userObj)
+  }
+
+  storeUser(user: any){
+    localStorage.setItem('loginUser', JSON.stringify(user))
+  }
+
+  getUser(){
+    return localStorage.getItem('loginUser');
+  }
+
   storeToken(tokenValue: string){
     localStorage.setItem('token', tokenValue)
   }

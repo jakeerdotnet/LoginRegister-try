@@ -118,20 +118,19 @@
                   </div>
                 </form>
 
-                <form [formGroup]="myForm1" (ngSubmit)="onSubmit()" class="mx-1 mx-md-4">
+                <form [formGroup]="myForm1" (ngSubmit)="onRegister()" class="mx-1 mx-md-4">
                   <div class="d-flex flex-row align-items-center mb-4">
                     <i class="fas fa-user-check fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <input type="text" id="optNumber" formControlName="optNumber" class="form-control" placeholder="OTP number" />
+                      <input type="password" id="optNumber" formControlName="optNumber" class="form-control" placeholder="OTP number" />
                       <div *ngIf="myForm.get('optNumber')?.invalid && myForm.get('optNumber')?.touched">
-                        <small class="error-message" *ngIf="myForm.get('optNumber')?.errors?.['passwordComplexity']">Password not matchecd</small>
-                        <small class="error-message" *ngIf="myForm.get('optNumber')?.errors?.['passwordMatched']">Password matchecd</small>
+                        <small class="error-message" *ngIf="myForm.get('optNumber')?.errors?.['otpMismatched']">Password not matchecd</small>
                       </div>
                     </div>
                   </div>
 
                   <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                    <button type="button" (click)="checkOtp()" class="btn btn-primary btn-lg" [disabled]="!disableRegisteredButton">Register</button>
+                    <button type="submit" class="btn btn-primary btn-lg" [disabled]="!disableRegisteredButton">Register</button>
                   </div>
                 </form>
 
